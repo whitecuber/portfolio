@@ -19,7 +19,11 @@ passport.use(new LocalStrategy(function(username, password, done) {
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    res.render('login', { title: 'Login' });
+    if (req.isAuthenticated()) {
+        res.redirect('/')
+    } else {
+        res.render('login', { title: 'Login' });
+    }
 });
 
 router.post('/',
