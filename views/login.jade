@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  section._main
+    form(action="/login", method="post")
+      div
+        label ユーザーID：
+        input(type="text", name="username")
+      div
+        label パスワード：
+        input(type="password", name="password")
+      div
+        input(type="submit", value="ログイン")
