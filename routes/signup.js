@@ -17,6 +17,10 @@ router.post('/', function(req, res, next) {
     var username = req.body.username;
     var password = req.body.password;
 
+    if (username == '' || password == '') {
+        res.redirect('/signup');
+    }
+
     User.where({
         username: username
     }).find(function(err, data) {
