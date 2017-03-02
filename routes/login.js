@@ -2,13 +2,13 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var passwordChecker = require('../lib/password-checker.js');
 var model = require('../lib/model.js');
 var User = model.User;
 
 passport.use(new LocalStrategy(function(username, password, done) {
     var query = {
         "username": username,
-        "password": password
     };
     User.find(query, function(err, data) {
         if (err) {
@@ -17,7 +17,11 @@ passport.use(new LocalStrategy(function(username, password, done) {
         if (data.length == 0) {
             return done(null, false);
         } else {
-            return done(null, username);
+            if (passwordChecker.check(password, data[0].hash)) {
+                return done(null, username);
+            } else {
+                return done(null, false);
+            }
         }
     });
 }));

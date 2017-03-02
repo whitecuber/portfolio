@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var isAuthenticated = require('../lib/login')
+var passwordChecker = require('../lib/password-checker.js');
 var model = require('../lib/model.js');
 var User = model.User;
 
@@ -13,20 +14,48 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-    var newUser = new User(req.body);
-    newUser.save(function(err) {
+    var username = req.body.username;
+    var password = req.body.password;
+
+    User.where({
+        username: username
+    }).find(function(err, data) {
         if (err) {
-            console.log(err);
-            res.redirect('back');
-        } else {
-            req.login(req.body.username, function(err) {
-                if (err) { return next(err); }
-                // TODO: セッションのとこは共通化したい
-                req.session.username = req.user
-                res.redirect('/')
-            });
+            return handleError(err);
         }
-    });
+        if (data.length === 0) {
+            // 登録可能な場合
+            var hash = passwordChecker.createHash(password);
+            var newUser = new User();
+            newUser.username = username;
+            newUser.hash = hash;
+            newUser.save(function(err) {
+                if (err) {
+                    res.redirect('/signup');
+                } else {
+                    res.redirect('/');
+                }
+            })
+        } else {
+            // 既に登録されている場合
+            res.redirect('/login');
+        }
+    })
 })
+
+//     newUser.save(function(err) {
+//         if (err) {
+//             console.log(err);
+//             res.redirect('back');
+//         } else {
+//             req.login(req.body.username, function(err) {
+//                 if (err) { return next(err); }
+//                 // TODO: セッションのとこは共通化したい
+//                 req.session.username = req.user
+//                 res.redirect('/')
+//             });
+//         }
+//     });
+// })
 
 module.exports = router;
