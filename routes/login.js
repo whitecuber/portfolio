@@ -2,19 +2,24 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
-var ObjectID = require('mongodb').ObjectID;
-var collection = require('../lib/mongo');
-var COL = 'portfolio';
+var model = require('../lib/model.js');
+var User = model.User;
 
 passport.use(new LocalStrategy(function(username, password, done) {
-    if (false) {
-        return done('エラー内容');
-    } else if (true) {
-        return done(null, username);
-    } else {
-        return done(null, false);
-    }
+    var query = {
+        "username": username,
+        "password": password
+    };
+    User.find(query, function(err, data) {
+        if (err) {
+            console.log(err);
+        }
+        if (data.length == 0) {
+            return done(null, false);
+        } else {
+            return done(null, username);
+        }
+    });
 }));
 
 /* GET users listing. */
@@ -29,8 +34,12 @@ router.get('/', function(req, res, next) {
 router.post('/',
     passport.authenticate('local', {
         failureRedirect: '/login', // 失敗したときの遷移先
-        successRedirect: '/', // 成功したときの遷移先
-    })
+    }),
+    function(req, res) {
+        // TODO: セッションのとこは共通化したい
+        req.session.username = req.body.username
+        res.redirect('/')
+    }
 )
 
 module.exports = router;

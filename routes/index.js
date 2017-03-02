@@ -4,7 +4,7 @@ var isAuthenticated = require('../lib/login')
 
 /* GET home page. */
 router.get('/', isAuthenticated, function(req, res, next) {
-    res.render('index', { title: 'whitecuber-portfolio' });
+    res.render('index', { title: 'whitecuber-portfolio', session: req.session });
 });
 
 module.exports = router;

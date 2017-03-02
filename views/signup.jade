@@ -4,7 +4,7 @@ block content
   h1= title
   p Welcome to #{title}
   section._main
-    form(action="/login", method="post")
+    form(action="/signup", method="post")
       div
         label ユーザー名：
         input(type="text", name="username")
@@ -12,5 +12,4 @@ block content
         label パスワード：
         input(type="password", name="password")
       div
-        input(type="submit", value="ログイン")
-    a(href="/signup") 新規登録
+        input(type="submit", value="新規登録")
