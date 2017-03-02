@@ -33,7 +33,12 @@ router.post('/', function(req, res, next) {
                 if (err) {
                     res.redirect('/signup');
                 } else {
-                    res.redirect('/');
+                    req.login(req.body.username, function(err) {
+                        if (err) { return next(err); }
+                        // TODO: セッションのとこは共通化したい
+                        req.session.username = req.user
+                        res.redirect('/')
+                    });
                 }
             })
         } else {
@@ -42,20 +47,5 @@ router.post('/', function(req, res, next) {
         }
     })
 })
-
-//     newUser.save(function(err) {
-//         if (err) {
-//             console.log(err);
-//             res.redirect('back');
-//         } else {
-//             req.login(req.body.username, function(err) {
-//                 if (err) { return next(err); }
-//                 // TODO: セッションのとこは共通化したい
-//                 req.session.username = req.user
-//                 res.redirect('/')
-//             });
-//         }
-//     });
-// })
 
 module.exports = router;
