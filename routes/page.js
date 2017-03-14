@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 })
 router.post('/', function(req, res, next) {
     var buffer = fs.readFileSync(req.file.path)
-    s3.putObject({
+    s3.upload({
             Bucket: S3_BUCKET_NAME,
             Key: req.file.filename,
             Body: buffer,
