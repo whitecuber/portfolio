@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-
+var isAuthenticated = require('../lib/login')
 var fs = require('fs')
 var aws = require('aws-sdk')
 
@@ -15,10 +15,10 @@ aws.config.update({
 
 var s3 = new aws.S3()
 
-router.get('/', function(req, res, next) {
+router.get('/', isAuthenticated, function(req, res, next) {
     res.render('page', { title: 'Page' })
 })
-router.post('/', function(req, res, next) {
+router.post('/', isAuthenticated, function(req, res, next) {
     var buffer = fs.readFileSync(req.file.path)
     s3.upload({
             Bucket: S3_BUCKET_NAME,
