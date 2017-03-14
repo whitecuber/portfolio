@@ -24,6 +24,7 @@ router.post('/', function(req, res, next) {
             Bucket: S3_BUCKET_NAME,
             Key: req.file.filename,
             Body: buffer,
+            ACL: 'public-read',
         },
         (error, result) => {
             if (error) {
