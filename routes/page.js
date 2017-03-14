@@ -26,8 +26,12 @@ router.post('/', function(req, res, next) {
             Body: buffer,
         },
         (error, result) => {
-            console.log(error, result)
-            res.end('ok')
+            if (error) {
+                console.log(error)
+                res.end('error')
+            } else {
+                res.end("<html><body><img src=${result.Location}></body></html>")
+            }
         }
     )
 })
