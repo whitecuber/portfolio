@@ -11,10 +11,12 @@ var users = require('./routes/users');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var signup = require('./routes/signup');
+var page = require('./routes/page');
 
 var app = express();
 var passport = require('passport');
 var session = require('express-session');
+var multer = require('multer')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(multer({ dest: '.' }).single('photo'))
 
 // セッション設定
 // req.sessionで呼び出せる
@@ -57,6 +60,7 @@ app.use('/users', users);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/signup', signup);
+app.use('/page', page);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
