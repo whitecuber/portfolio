@@ -10,3 +10,9 @@ block content
         input(type="file", name="photo")
       div
         input(type="submit", value="アップロード")
+
+    ul
+      each uploadImage in uploadImages
+        li
+          img(src=uploadImage.path)
+          p= uploadImage.username

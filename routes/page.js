@@ -18,7 +18,12 @@ aws.config.update({
 const s3 = new aws.S3()
 
 router.get('/', isAuthenticated, function(req, res, next) {
-  res.render('page', { title: 'Page' })
+  const query = {
+    "username": req.session.username,
+  };
+  UploadImage.find(query, function(err, data) {
+    res.render('page', { title: 'Page', uploadImages: data })
+  })
 })
 router.post('/', isAuthenticated, function(req, res, next) {
   const buffer = fs.readFileSync(req.file.path)
@@ -37,7 +42,6 @@ router.post('/', isAuthenticated, function(req, res, next) {
         newUploadImage.username = req.session.username
         newUploadImage.path = result.Location
         newUploadImage.private = false
-        console.log(newUploadImage)
         newUploadImage.save((err) => {
           if (err) {
             console.log(error)
