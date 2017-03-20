@@ -10,3 +10,14 @@ a {
   height: 500px;
   background-color: #959595;
 }
+._main .item-list {
+  display: flex;
+  list-style: none;
+}
+._main .item-list li + li {
+  margin-left: 10px;
+}
+._main .thumbnail {
+  width: 100px;
+  height: 100px;
+}
