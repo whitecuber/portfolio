@@ -61,7 +61,6 @@ router.post('/delete/:itemId', isAuthenticated, function(req, res, next) {
               res.redirect('/page')
             }
           })
-
         }
       }
     )

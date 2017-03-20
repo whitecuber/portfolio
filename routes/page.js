@@ -48,7 +48,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
             console.log(error)
             res.end('error')
           } else {
-            res.end(`<html><body>アップロードしました<img src=${result.Location}></body></html>`)
+            res.redirect('/page')
           }
         })
       }
