@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  section._main
+    div
+      h2= uploadImage.itemname
+      img(src=uploadImage.path)
+      p= uploadImage.username
+    form(action="/item/delete/#{uploadImage._id}", method="post")
+      input(type="submit", value="削除")

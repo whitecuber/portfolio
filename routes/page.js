@@ -40,6 +40,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
       } else {
         const newUploadImage = new UploadImage()
         newUploadImage.username = req.session.username
+        newUploadImage.itemname = req.body.itemname || 'untitled'
         newUploadImage.path = result.Location
         newUploadImage.private = false
         newUploadImage.save((err) => {

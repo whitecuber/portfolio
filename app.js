@@ -12,6 +12,7 @@ var login = require('./routes/login');
 var logout = require('./routes/logout');
 var signup = require('./routes/signup');
 var page = require('./routes/page');
+var item = require('./routes/item');
 
 var app = express();
 var passport = require('passport');
@@ -35,22 +36,22 @@ app.use(multer({ dest: '.' }).single('photo'))
 // セッション設定
 // req.sessionで呼び出せる
 app.use(session({
-    secret: 'hoge',
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 60 * 60 * 1000 // 60分
-    }
+  secret: 'hoge',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 60 * 60 * 1000 // 60分
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
-    done(null, user);
+  done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
-    done(null, user);
+  done(null, user);
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -61,23 +62,24 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/signup', signup);
 app.use('/page', page);
+app.use('/item', item);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
 module.exports = app;

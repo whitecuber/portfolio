@@ -9,10 +9,15 @@ block content
         label ファイル：
         input(type="file", name="photo")
       div
+        label ファイル名：
+        input(type="text", name="itemname")
+      div
         input(type="submit", value="アップロード")
 
     ul
       each uploadImage in uploadImages
         li
-          img(src=uploadImage.path)
-          p= uploadImage.username
+          a(href="/item/#{uploadImage._id}")
+            h2= uploadImage.itemname
+            img(src=uploadImage.path)
+            p= uploadImage.username
