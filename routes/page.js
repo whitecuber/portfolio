@@ -35,7 +35,7 @@ router.get('/:username', isAuthenticated, function(req, res, next) {
     if (err) {
       console.log(err);
     }
-    if (userData.length == 0) {
+    if (!userData) {
       res.end('user not found')
     } else {
       const query = {

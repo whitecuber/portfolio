@@ -9,8 +9,10 @@ block content
       img(src=uploadImage.path)
       p= uploadImage.username
       p= uploadImage.updateAt
-      p= uploadImage.createAt
-    form(action="/item/delete/#{uploadImage._id}", method="post")
-      input(type="hidden", name="_csrf", value="#{csrf}")
-      input(type="submit", value="削除")
+      p= uploadImage.creatAt
+
+    if session.username === uploadImage.username
+      form(action="/item/delete/#{uploadImage._id}", method="post")
+        input(type="hidden", name="_csrf", value="#{csrf}")
+        input(type="submit", value="削除")
     a(href="/page") 戻る

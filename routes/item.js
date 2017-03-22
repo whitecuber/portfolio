@@ -21,11 +21,11 @@ router.get('/:itemId', isAuthenticated, function(req, res, next) {
     "_id": req.params.itemId,
   };
   UploadImage.findOne(query, function(err, data) {
-    if (err || !data.length) {
+    if (err || !data) {
       console.log(err)
       res.end('error')
     }
-    res.render('item', { title: 'Item', uploadImage: data, csrf: req.csrfToken() })
+    res.render('item', { title: 'Item', session: req.session, uploadImage: data, csrf: req.csrfToken() })
   })
 })
 
