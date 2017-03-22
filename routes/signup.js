@@ -6,50 +6,50 @@ var model = require('../lib/model.js');
 var User = model.User;
 
 router.get('/', function(req, res, next) {
-    if (req.isAuthenticated()) {
-        res.redirect('/')
-    } else {
-        res.render('signup', { title: 'Signup' });
-    }
+  if (req.isAuthenticated()) {
+    res.redirect('/')
+  } else {
+    res.render('signup', { title: 'Signup', csrf: req.csrfToken() });
+  }
 });
 
 router.post('/', function(req, res, next) {
-    var username = req.body.username;
-    var password = req.body.password;
+  var username = req.body.username;
+  var password = req.body.password;
 
-    if (username == '' || password == '') {
-        return res.redirect('/signup');
+  if (username == '' || password == '') {
+    return res.redirect('/signup');
+  }
+
+  User.where({
+    username: username
+  }).find(function(err, data) {
+    if (err) {
+      return handleError(err);
     }
-
-    User.where({
-        username: username
-    }).find(function(err, data) {
+    if (data.length === 0) {
+      // 登録可能な場合
+      var hash = passwordChecker.createHash(password);
+      var newUser = new User();
+      newUser.username = username;
+      newUser.hash = hash;
+      newUser.save(function(err) {
         if (err) {
-            return handleError(err);
-        }
-        if (data.length === 0) {
-            // 登録可能な場合
-            var hash = passwordChecker.createHash(password);
-            var newUser = new User();
-            newUser.username = username;
-            newUser.hash = hash;
-            newUser.save(function(err) {
-                if (err) {
-                    res.redirect('/signup');
-                } else {
-                    req.login(req.body.username, function(err) {
-                        if (err) { return next(err); }
-                        // TODO: セッションのとこは共通化したい
-                        req.session.username = req.user
-                        res.redirect('/')
-                    });
-                }
-            })
+          res.redirect('/signup');
         } else {
-            // 既に登録されている場合
-            res.redirect('/login');
+          req.login(req.body.username, function(err) {
+            if (err) { return next(err); }
+            // TODO: セッションのとこは共通化したい
+            req.session.username = req.user
+            res.redirect('/')
+          });
         }
-    })
+      })
+    } else {
+      // 既に登録されている場合
+      res.redirect('/login');
+    }
+  })
 })
 
 module.exports = router;

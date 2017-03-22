@@ -22,10 +22,10 @@ router.get('/:itemId', isAuthenticated, function(req, res, next) {
   };
   UploadImage.find(query, function(err, data) {
     if (err || !data[0]) {
-      console.log(error)
+      console.log(err)
       res.end('error')
     }
-    res.render('item', { title: 'Item', uploadImage: data[0] })
+    res.render('item', { title: 'Item', uploadImage: data[0], csrf: req.csrfToken() })
   })
 })
 
@@ -35,7 +35,7 @@ router.post('/delete/:itemId', isAuthenticated, function(req, res, next) {
   }
   UploadImage.find(query, function(err, data) {
     if (err || !data[0]) {
-      console.log(error)
+      console.log(err)
       res.end('error')
     }
 
@@ -54,8 +54,8 @@ router.post('/delete/:itemId', isAuthenticated, function(req, res, next) {
             "_id": req.params.itemId,
           }
           UploadImage.remove(query, function(err, data) {
-            if (error) {
-              console.log(error)
+            if (err) {
+              console.log(err)
               res.end('error')
             } else {
               res.redirect('/page')

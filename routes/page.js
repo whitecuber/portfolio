@@ -22,7 +22,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
     "username": req.session.username,
   };
   UploadImage.find(query, function(err, data) {
-    res.render('page', { title: 'Page', uploadImages: data })
+    res.render('page', { title: 'Page', uploadImages: data, csrf: req.csrfToken() })
   })
 })
 router.post('/', isAuthenticated, function(req, res, next) {
@@ -45,7 +45,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
         newUploadImage.private = false
         newUploadImage.save((err) => {
           if (err) {
-            console.log(error)
+            console.log(err)
             res.end('error')
           } else {
             res.redirect('/page')

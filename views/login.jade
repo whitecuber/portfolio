@@ -5,6 +5,7 @@ block content
   p Welcome to #{title}
   section._main
     form(action="/login", method="post")
+      input(type="hidden", name="_csrf", value="#{csrf}")
       div
         label ユーザー名：
         input(type="text", name="username")

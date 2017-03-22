@@ -18,6 +18,7 @@ var app = express();
 var passport = require('passport');
 var session = require('express-session');
 var multer = require('multer')
+var csrf = require('csurf');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,6 +55,7 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(csrf());
 
 // routes
 app.use('/', index);
