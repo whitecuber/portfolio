@@ -26,28 +26,29 @@ router.post('/', function(req, res, next) {
   }).find(function(err, data) {
     if (err) {
       return handleError(err);
-    }
-    if (data.length === 0) {
-      // 登録可能な場合
-      var hash = passwordChecker.createHash(password);
-      var newUser = new User();
-      newUser.username = username;
-      newUser.hash = hash;
-      newUser.save(function(err) {
-        if (err) {
-          res.redirect('/signup');
-        } else {
-          req.login(req.body.username, function(err) {
-            if (err) { return next(err); }
-            // TODO: セッションのとこは共通化したい
-            req.session.username = req.user
-            res.redirect('/')
-          });
-        }
-      })
     } else {
-      // 既に登録されている場合
-      res.redirect('/login');
+      if (data.length === 0) {
+        // 登録可能な場合
+        var hash = passwordChecker.createHash(password);
+        var newUser = new User();
+        newUser.username = username;
+        newUser.hash = hash;
+        newUser.save(function(err) {
+          if (err) {
+            res.redirect('/signup');
+          } else {
+            req.login(req.body.username, function(err) {
+              if (err) { return next(err); }
+              // TODO: セッションのとこは共通化したい
+              req.session.username = req.user
+              res.redirect('/')
+            });
+          }
+        })
+      } else {
+        // 既に登録されている場合
+        res.redirect('/login');
+      }
     }
   })
 })

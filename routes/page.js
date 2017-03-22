@@ -34,17 +34,19 @@ router.get('/:username', isAuthenticated, function(req, res, next) {
   User.findOne(query, function(err, userData) {
     if (err) {
       console.log(err);
-    }
-    if (!userData) {
-      res.end('user not found')
+      res.end('error')
     } else {
-      const query = {
-        "username": req.params.username,
-        "private": false,
+      if (!userData) {
+        res.end('user not found')
+      } else {
+        const query = {
+          "username": req.params.username,
+          "private": false,
+        }
+        UploadImage.find(query, function(err, data) {
+          res.render('userpage', { title: 'UserPage', user: userData, uploadImages: data })
+        })
       }
-      UploadImage.find(query, function(err, data) {
-        res.render('userpage', { title: 'UserPage', user: userData, uploadImages: data })
-      })
     }
   })
 })
