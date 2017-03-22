@@ -22,48 +22,54 @@ router.get('/:itemId', isAuthenticated, function(req, res, next) {
   };
   UploadImage.findOne(query, function(err, data) {
     if (err || !data) {
-      console.log(err)
+      if (err) {
+        console.log(err)
+      }
       res.end('error')
+    } else {
+      res.render('item', { title: 'Item', session: req.session, uploadImage: data, csrf: req.csrfToken() })
     }
-    res.render('item', { title: 'Item', session: req.session, uploadImage: data, csrf: req.csrfToken() })
   })
 })
 
 router.post('/delete/:itemId', isAuthenticated, function(req, res, next) {
   const query = {
     "_id": req.params.itemId,
+    "username": req.session.username,
   }
-  UploadImage.find(query, function(err, data) {
-    if (err || !data[0]) {
-      console.log(err)
-      res.end('error')
-    }
-
-    const filename = data[0].path.match(/https?:\/\/.+\/(.+)$/)[1]
-
-    s3.deleteObject({
-        Bucket: S3_BUCKET_NAME,
-        Key: filename,
-      },
-      (error, result) => {
-        if (error) {
-          console.log(error)
-          res.end('error')
-        } else {
-          const query = {
-            "_id": req.params.itemId,
-          }
-          UploadImage.remove(query, function(err, data) {
-            if (err) {
-              console.log(err)
-              res.end('error')
-            } else {
-              res.redirect('/page')
-            }
-          })
-        }
+  UploadImage.findOne(query, function(err, data) {
+    if (err || !data) {
+      if (err) {
+        console.log(err)
       }
-    )
+      res.end('error')
+    } else {
+      const filename = data.path.match(/https?:\/\/.+\/(.+)$/)[1]
+
+      s3.deleteObject({
+          Bucket: S3_BUCKET_NAME,
+          Key: filename,
+        },
+        (error, result) => {
+          if (error) {
+            console.log(error)
+            res.end('error')
+          } else {
+            const query = {
+              "_id": req.params.itemId,
+            }
+            UploadImage.remove(query, function(err, data) {
+              if (err) {
+                console.log(err)
+                res.end('error')
+              } else {
+                res.redirect('/page')
+              }
+            })
+          }
+        }
+      )
+    }
   })
 })
 
