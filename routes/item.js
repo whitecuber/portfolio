@@ -20,12 +20,12 @@ router.get('/:itemId', isAuthenticated, function(req, res, next) {
   const query = {
     "_id": req.params.itemId,
   };
-  UploadImage.find(query, function(err, data) {
-    if (err || !data[0]) {
+  UploadImage.findOne(query, function(err, data) {
+    if (err || !data.length) {
       console.log(err)
       res.end('error')
     }
-    res.render('item', { title: 'Item', uploadImage: data[0], csrf: req.csrfToken() })
+    res.render('item', { title: 'Item', uploadImage: data, csrf: req.csrfToken() })
   })
 })
 
