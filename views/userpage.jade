@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to "#{user.username}'s page"
+  section._main
+    ul.item-list
+      each uploadImage in uploadImages
+        li
+          a(href="/item/#{uploadImage._id}")
+            h2= uploadImage.itemname
+            img.thumbnail(src=uploadImage.path)
+            p= uploadImage.username

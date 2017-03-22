@@ -4,6 +4,7 @@ const isAuthenticated = require('../lib/login')
 const fs = require('fs')
 const aws = require('aws-sdk')
 const model = require('../lib/model.js')
+const User = model.User
 const UploadImage = model.UploadImage
 
 const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID
@@ -25,6 +26,30 @@ router.get('/', isAuthenticated, function(req, res, next) {
     res.render('page', { title: 'Page', uploadImages: data, csrf: req.csrfToken() })
   })
 })
+router.get('/:username', isAuthenticated, function(req, res, next) {
+  // Userテーブルにそのユーザーがいるか確認
+  const query = {
+    "username": req.params.username,
+  }
+  User.findOne(query, function(err, userData) {
+    if (err) {
+      console.log(err);
+    }
+    if (userData.length == 0) {
+      res.end('user not found')
+    } else {
+      const query = {
+        "username": req.params.username,
+        "private": false,
+      }
+      UploadImage.find(query, function(err, data) {
+        res.render('userpage', { title: 'UserPage', user: userData, uploadImages: data })
+      })
+    }
+  })
+})
+
+
 router.post('/', isAuthenticated, function(req, res, next) {
   const buffer = fs.readFileSync(req.file.path)
   s3.upload({
