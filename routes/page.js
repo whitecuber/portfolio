@@ -3,6 +3,7 @@ const router = express.Router()
 const isAuthenticated = require('../lib/login')
 const fs = require('fs')
 const aws = require('aws-sdk')
+const fileType = require('file-type')
 const model = require('../lib/model.js')
 const User = model.User
 const UploadImage = model.UploadImage
@@ -54,6 +55,11 @@ router.get('/:username', isAuthenticated, function(req, res, next) {
 
 router.post('/', isAuthenticated, function(req, res, next) {
   const buffer = fs.readFileSync(req.file.path)
+  const uploadFileType = fileType(buffer)
+  if (uploadFileType == null || uploadFileType.mime.indexOf('image') < 0) {
+    return res.end('file type error')
+  }
+
   s3.upload({
       Bucket: S3_BUCKET_NAME,
       Key: req.file.filename,
