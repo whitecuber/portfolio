@@ -21,3 +21,7 @@ a {
   width: 100px;
   height: 100px;
 }
+#item-preview {
+  max-width: 200px;
+  max-height: 200px;
+}
