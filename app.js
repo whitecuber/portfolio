@@ -55,7 +55,21 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(csrf());
+const csrfFuc = csrf();
+app.use(function(req, res, next) {
+  //無視するURI
+  const ignoreUris = ['^\/page\/api\/upload\/?$']
+  ignoreUris.forEach((ignoreUri) => {
+    if (req.url.match(ignoreUri)) {
+      //パターンマッチしたらそのまま処理を次へまわす。
+      next();
+      return;
+    }
+  })
+
+  //パターンマッチしなかったら、CSRFの処理を通す。
+  csrfFuc(req, res, next)
+});
 
 // routes
 app.use('/', index);

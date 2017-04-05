@@ -5,6 +5,7 @@ const fs = require('fs')
 const aws = require('aws-sdk')
 const fileType = require('file-type')
 const model = require('../lib/model.js')
+const passwordChecker = require('../lib/password-checker.js')
 const User = model.User
 const UploadImage = model.UploadImage
 
@@ -52,8 +53,44 @@ router.get('/:username', isAuthenticated, function(req, res, next) {
   })
 })
 
-
 router.post('/', isAuthenticated, function(req, res, next) {
+  upload(req, () => {
+    res.redirect('/page')
+  })
+})
+
+router.post('/api/upload/', function(req, res, next) {
+  const username = req.body.username
+  const password = req.body.password
+  const query = {
+    "username": username,
+  };
+  User.find(query, function(err, data) {
+    if (err) {
+      console.log(err)
+      res.end('error')
+    } else {
+      if (data.length == 0) {
+        console.log('user not found')
+        res.end('error')
+      } else {
+        if (passwordChecker.check(password, data[0].hash)) {
+          upload(req, () => {
+            res.end('success')
+          })
+        } else {
+          console.log('password invalid')
+          res.end('error')
+        }
+      }
+    }
+  })
+})
+
+function upload(req, success) {
+  if (!req.file) {
+    return res.end('file not selected')
+  }
   const buffer = fs.readFileSync(req.file.path)
   const uploadFileType = fileType(buffer)
   if (uploadFileType == null || uploadFileType.mime.indexOf('image') < 0) {
@@ -72,7 +109,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
         res.end('error')
       } else {
         const newUploadImage = new UploadImage()
-        newUploadImage.username = req.session.username
+        newUploadImage.username = req.body.username
         newUploadImage.itemname = req.body.itemname || 'untitled'
         newUploadImage.path = result.Location
         newUploadImage.private = false
@@ -81,12 +118,13 @@ router.post('/', isAuthenticated, function(req, res, next) {
             console.log(err)
             res.end('error')
           } else {
-            res.redirect('/page')
+            success()
           }
         })
       }
     }
   )
-})
+
+}
 
 module.exports = router
