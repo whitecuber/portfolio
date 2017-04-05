@@ -54,7 +54,7 @@ router.get('/:username', isAuthenticated, function(req, res, next) {
 })
 
 router.post('/', isAuthenticated, function(req, res, next) {
-  upload(req, () => {
+  upload(req, req.session.username, () => {
     res.redirect('/page')
   })
 })
@@ -75,7 +75,7 @@ router.post('/api/upload/', function(req, res, next) {
         res.end('error')
       } else {
         if (passwordChecker.check(password, data[0].hash)) {
-          upload(req, () => {
+          upload(req, req.body.username, () => {
             res.end('success')
           })
         } else {
@@ -87,7 +87,7 @@ router.post('/api/upload/', function(req, res, next) {
   })
 })
 
-function upload(req, success) {
+function upload(req, username, success) {
   if (!req.file) {
     return res.end('file not selected')
   }
@@ -109,7 +109,7 @@ function upload(req, success) {
         res.end('error')
       } else {
         const newUploadImage = new UploadImage()
-        newUploadImage.username = req.body.username
+        newUploadImage.username = username
         newUploadImage.itemname = req.body.itemname || 'untitled'
         newUploadImage.path = result.Location
         newUploadImage.private = false
