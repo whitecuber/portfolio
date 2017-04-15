@@ -44,6 +44,7 @@ router.post('/', function(req, res, next) {
             newFolder.username = username;
             newFolder.folderName = 'newFolder';
             newFolder.category = Object.keys(categoryMaster)[0];
+            newFolder.private = false;
             newFolder.save(function(err) {
               if (err) {
                 res.redirect('/signup');
