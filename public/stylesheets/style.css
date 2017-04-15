@@ -12,6 +12,7 @@ a {
 }
 ._main .item-list {
   display: flex;
+  flex-wrap: wrap;
   list-style: none;
 }
 ._main .item-list li + li {
