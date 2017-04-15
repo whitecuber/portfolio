@@ -11,16 +11,12 @@ block content
         input#item-uploader(type="file", name="photo")
         img#item-preview
       div
-        label ファイル名：
-        input(type="text", name="itemname")
-      div
         input(type="submit", value="アップロード")
 
     ul.item-list
       each uploadImage in uploadImages
         li
           a(href="/item/#{uploadImage._id}")
-            h2= uploadImage.itemname
             img.thumbnail(src=uploadImage.path)
             p= uploadImage.username
 

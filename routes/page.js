@@ -110,7 +110,6 @@ function upload(req, username, success) {
       } else {
         const newUploadImage = new UploadImage()
         newUploadImage.username = username
-        newUploadImage.itemname = req.body.itemname || 'untitled'
         newUploadImage.path = result.Location
         newUploadImage.private = false
         newUploadImage.save((err) => {

@@ -8,6 +8,5 @@ block content
       each uploadImage in uploadImages
         li
           a(href="/item/#{uploadImage._id}")
-            h2= uploadImage.itemname
             img.thumbnail(src=uploadImage.path)
             p= uploadImage.username
