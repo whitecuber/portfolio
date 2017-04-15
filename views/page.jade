@@ -11,6 +11,11 @@ block content
         input#item-uploader(type="file", name="photo")
         img#item-preview
       div
+        label フォルダ：
+        select(name="folderId")
+          each folder in folders
+            option(value=folder._id)= folder.folderName
+      div
         input(type="submit", value="アップロード")
 
     ul.item-list

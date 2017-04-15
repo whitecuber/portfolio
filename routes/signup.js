@@ -4,6 +4,9 @@ var isAuthenticated = require('../lib/login')
 var passwordChecker = require('../lib/password-checker.js');
 var model = require('../lib/model.js');
 var User = model.User;
+var Folder = model.Folder;
+
+const categoryMaster = require('../lib/const/category').default
 
 router.get('/', function(req, res, next) {
   if (req.isAuthenticated()) {
@@ -37,11 +40,21 @@ router.post('/', function(req, res, next) {
           if (err) {
             res.redirect('/signup');
           } else {
-            req.login(req.body.username, function(err) {
-              if (err) { return next(err); }
-              // TODO: セッションのとこは共通化したい
-              req.session.username = req.user
-              res.redirect('/')
+            var newFolder = new Folder();
+            newFolder.username = username;
+            newFolder.folderName = 'newFolder';
+            newFolder.category = Object.keys(categoryMaster)[0];
+            newFolder.save(function(err) {
+              if (err) {
+                res.redirect('/signup');
+              } else {
+                req.login(req.body.username, function(err) {
+                  if (err) { return next(err); }
+                  // TODO: セッションのとこは共通化したい
+                  req.session.username = req.user
+                  res.redirect('/')
+                })
+              }
             });
           }
         })

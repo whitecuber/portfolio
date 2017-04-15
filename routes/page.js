@@ -8,6 +8,7 @@ const model = require('../lib/model.js')
 const passwordChecker = require('../lib/password-checker.js')
 const User = model.User
 const UploadImage = model.UploadImage
+const Folder = model.Folder
 
 const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID
 const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY
@@ -23,11 +24,19 @@ const s3 = new aws.S3()
 router.get('/', isAuthenticated, function(req, res, next) {
   const query = {
     "username": req.session.username,
-  };
+  }
   UploadImage.find(query, function(err, data) {
-    res.render('page', { title: 'Page', uploadImages: data, csrf: req.csrfToken() })
+    Folder.find(query, function(err, folders) {
+      res.render('page', {
+        title: 'Page',
+        uploadImages: data,
+        folders,
+        csrf: req.csrfToken()
+      })
+    })
   })
 })
+
 router.get('/:username', isAuthenticated, function(req, res, next) {
   // Userテーブルにそのユーザーがいるか確認
   const query = {
@@ -64,7 +73,7 @@ router.post('/api/upload/', function(req, res, next) {
   const password = req.body.password
   const query = {
     "username": username,
-  };
+  }
   User.find(query, function(err, data) {
     if (err) {
       console.log(err)
@@ -111,7 +120,7 @@ function upload(req, username, success) {
         const newUploadImage = new UploadImage()
         newUploadImage.username = username
         newUploadImage.path = result.Location
-        newUploadImage.private = false
+        newUploadImage.folderId = req.body.folderId
         newUploadImage.save((err) => {
           if (err) {
             console.log(err)
