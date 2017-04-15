@@ -24,4 +24,21 @@ block content
           a(href="/page/#{folder._id}")
             p= folder.folderName
 
+    h2 フォルダ作成
+    form(action="/folder", method="post", enctype="multipart/form-data")
+      input(type="hidden", name="_csrf", value="#{csrf}")
+      div
+        label フォルダ名：
+        input(type="text" name="folderName")
+      div
+        label カテゴリ：
+        select(name="categoryId")
+          each name, id in categoryMaster
+            option(value=id)= name
+      div
+        label 非公開：
+        input(type="checkbox" name="private" value="1")
+      div
+        input(type="submit", value="フォルダを作成")
+
   script(src="/javascripts/uploader.js")

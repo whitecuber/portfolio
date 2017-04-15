@@ -13,6 +13,7 @@ var logout = require('./routes/logout');
 var signup = require('./routes/signup');
 var page = require('./routes/page');
 var item = require('./routes/item');
+var folder = require('./routes/folder');
 
 var app = express();
 var passport = require('passport');
@@ -79,6 +80,7 @@ app.use('/logout', logout);
 app.use('/signup', signup);
 app.use('/page', page);
 app.use('/item', item);
+app.use('/folder', folder);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

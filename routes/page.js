@@ -10,6 +10,8 @@ const User = model.User
 const UploadImage = model.UploadImage
 const Folder = model.Folder
 
+const categoryMaster = require('../lib/const/category').default
+
 const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID
 const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME
@@ -29,6 +31,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
     res.render('dashboard', {
       title: 'Page',
       folders,
+      categoryMaster,
       csrf: req.csrfToken()
     })
   })
