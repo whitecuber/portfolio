@@ -25,19 +25,16 @@ router.get('/', isAuthenticated, function(req, res, next) {
   const query = {
     "username": req.session.username,
   }
-  UploadImage.find(query, function(err, data) {
-    Folder.find(query, function(err, folders) {
-      res.render('page', {
-        title: 'Page',
-        uploadImages: data,
-        folders,
-        csrf: req.csrfToken()
-      })
+  Folder.find(query, function(err, folders) {
+    res.render('dashboard', {
+      title: 'Page',
+      folders,
+      csrf: req.csrfToken()
     })
   })
 })
 
-router.get('/:username', isAuthenticated, function(req, res, next) {
+router.get('/@:username', isAuthenticated, function(req, res, next) {
   // Userテーブルにそのユーザーがいるか確認
   const query = {
     "username": req.params.username,
@@ -59,6 +56,26 @@ router.get('/:username', isAuthenticated, function(req, res, next) {
         })
       }
     }
+  })
+})
+
+router.get('/:folderId', isAuthenticated, function(req, res, next) {
+  const query = {
+    "username": req.session.username,
+    "folderId": req.params.folderId,
+  }
+  UploadImage.find(query, function(err, data) {
+    const query = {
+      "_id": req.params.folderId,
+    }
+    Folder.findOne(query, function(err, folder) {
+      res.render('page', {
+        title: folder.folderName,
+        uploadImages: data,
+        folder,
+        csrf: req.csrfToken()
+      })
+    })
   })
 })
 

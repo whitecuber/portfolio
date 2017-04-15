@@ -4,25 +4,9 @@ block content
   h1= title
   p Welcome to #{title}
   section._main
-    form(action="/page", method="post", enctype="multipart/form-data")
-      input(type="hidden", name="_csrf", value="#{csrf}")
-      div
-        label ファイル：
-        input#item-uploader(type="file", name="photo")
-        img#item-preview
-      div
-        label フォルダ：
-        select(name="folderId")
-          each folder in folders
-            option(value=folder._id)= folder.folderName
-      div
-        input(type="submit", value="アップロード")
-
     ul.item-list
       each uploadImage in uploadImages
         li
           a(href="/item/#{uploadImage._id}")
             img.thumbnail(src=uploadImage.path)
             p= uploadImage.username
-
-  script(src="/javascripts/uploader.js")
