@@ -49,7 +49,6 @@ router.get('/@:username', isAuthenticated, function(req, res, next) {
       } else {
         const query = {
           "username": req.params.username,
-          "private": false,
         }
         UploadImage.find(query, function(err, data) {
           res.render('userpage', { title: 'UserPage', user: userData, uploadImages: data })
