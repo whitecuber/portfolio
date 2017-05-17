@@ -33,19 +33,35 @@ router.get('/', function(req, res, next) {
   if (req.isAuthenticated()) {
     res.redirect('/')
   } else {
-    res.render('login', { title: 'Login', csrf: req.csrfToken() });
+    res.render('login', {
+      title: 'Login',
+      nextUrl: req.query.next,
+      csrf: req.csrfToken()
+    });
   }
 });
 
-router.post('/',
-  passport.authenticate('local', {
-    failureRedirect: '/login', // 失敗したときの遷移先
-  }),
-  function(req, res) {
-    // TODO: セッションのとこは共通化したい
-    req.session.username = req.body.username
-    res.redirect('/')
-  }
-)
+router.post('/', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) {
+      return res.redirect(req.get('referer'))
+    }
+    if (!user) {
+      return res.redirect(req.get('referer'))
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return res.redirect(req.get('referer'))
+      }
+
+      req.session.username = req.body.username
+      if (req.body.next) {
+        res.redirect(req.body.next)
+      } else {
+        res.redirect('/')
+      }
+    })
+  })(req, res, next)
+})
 
 module.exports = router;
